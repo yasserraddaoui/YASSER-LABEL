@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beach Shorts - Brand Yasser</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .product-page {
+            padding-top: 100px;
+            min-height: 100vh;
+            background-color: var(--light-bg);
+        }
+
+        .product-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .product-image {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .product-info {
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .product-title {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .product-price {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-description {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .size-selector {
+            margin-bottom: 2rem;
+        }
+
+        .size-options {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .size-option {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .size-option:hover, .size-option.selected {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .quantity-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: #f0f0f0;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .quantity-input {
+            width: 60px;
+            text-align: center;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .add-to-cart-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-to-cart-btn:hover {
+            background: #34495e;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .product-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand">
+            <img src="logo.png" alt="Brand Yasser Logo" class="logo">
+            <span class="brand-text">Brand Yasser</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="cart.html" class="cart-link">
+                <span class="cart-icon">🛒</span>
+                <span class="cart-count" id="cart-count">0</span>
+            </a></li>
+        </ul>
+    </nav>
+
+    <div class="product-page">
+        <div class="product-container">
+            <div class="product-image-container">
+                <img src="2.webp" alt="Beach Shorts" class="product-image">
+            </div>
+            <div class="product-info">
+                <h1 class="product-title">Beach Shorts</h1>
+                <p class="product-price">$29.99</p>
+                <p class="product-description">
+                    Comfortable and stylish beach shorts with quick-dry fabric. Perfect for summer days and beach activities. 
+                    Features a comfortable elastic waistband, multiple pockets, and a lightweight design that keeps you cool 
+                    in hot weather.
+                </p>
+                <div class="size-selector">
+                    <h3>Select Size</h3>
+                    <div class="size-options">
+                        <div class="size-option" onclick="selectSize(this)">S</div>
+                        <div class="size-option" onclick="selectSize(this)">M</div>
+                        <div class="size-option" onclick="selectSize(this)">L</div>
+                        <div class="size-option" onclick="selectSize(this)">XL</div>
+                    </div>
+                </div>
+                <div class="quantity-selector">
+                    <button class="quantity-btn" onclick="updateQuantity(-1)">-</button>
+                    <input type="number" class="quantity-input" id="quantity" value="1" min="1" readonly>
+                    <button class="quantity-btn" onclick="updateQuantity(1)">+</button>
+                </div>
+                <button class="add-to-cart-btn" onclick="addToCart()">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Notification -->
+    <div class="cart-notification" id="cart-notification">
+        <div class="cart-notification-icon">✓</div>
+        <h2 class="cart-notification-title">Item Added to Cart!</h2>
+        <p class="cart-notification-message">Your item has been successfully added to your shopping cart.</p>
+        <div class="cart-notification-buttons">
+            <button class="cart-notification-btn continue" onclick="continueShopping()">Continue Shopping</button>
+            <button class="cart-notification-btn view-cart" onclick="viewCart()">View Cart</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedSize = null;
+        let quantity = 1;
+
+        function selectSize(element) {
+            // Remove selected class from all size options
+            document.querySelectorAll('.size-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            // Add selected class to clicked option
+            element.classList.add('selected');
+            selectedSize = element.textContent;
+        }
+
+        function updateQuantity(change) {
+            quantity = Math.max(1, quantity + change);
+            document.getElementById('quantity').value = quantity;
+        }
+
+        function addToCart() {
+            if (!selectedSize) {
+                alert('Please select a size');
+                return;
+            }
+
+            const product = {
+                name: 'Beach Shorts',
+                price: 29.99,
+                image: '2.webp',
+                size: selectedSize,
+                quantity: quantity
+            };
+
+            // Get existing cart or create new one
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            // Check if item already exists with same size
+            const existingItemIndex = cart.findIndex(item => 
+                item.name === product.name && item.size === product.size
+            );
+
+            if (existingItemIndex > -1) {
+                // Update quantity if item exists
+                cart[existingItemIndex].quantity += quantity;
+            } else {
+                // Add new item if it doesn't exist
+                cart.push(product);
+            }
+
+            // Save cart
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            // Update cart count
+            updateCartCount();
+
+            // Show notification
+            showCartNotification();
+        }
+
+        function showCartNotification() {
+            const notification = document.getElementById('cart-notification');
+            notification.classList.add('show');
+        }
+
+        function continueShopping() {
+            const notification = document.getElementById('cart-notification');
+            notification.classList.remove('show');
+        }
+
+        function viewCart() {
+            window.location.href = 'cart.html';
+        }
+
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-count').textContent = totalItems;
+        }
+
+        // Load cart count when page loads
+        document.addEventListener('DOMContentLoaded', updateCartCount);
+    </script>
+</body>
+</html> 

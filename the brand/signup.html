@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Brand Yasser</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .auth-container {
+            max-width: 400px;
+            margin: 120px auto;
+            padding: 2rem;
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .auth-btn:hover {
+            background: #2980b9;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            margin-bottom: 1rem;
+            text-align: center;
+            padding: 0.5rem;
+            background: #fde8e8;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: #2ecc71;
+            margin-bottom: 1rem;
+            text-align: center;
+            padding: 0.5rem;
+            background: #e8f8e8;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .login-link a {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .password-requirements {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .password-requirements ul {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .password-requirements li {
+            margin-bottom: 0.25rem;
+        }
+
+        .password-requirements li.valid {
+            color: #2ecc71;
+        }
+
+        .password-requirements li.invalid {
+            color: #e74c3c;
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+
+        .form-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand">
+            <img src="logo.png" alt="Brand Yasser Logo" class="logo">
+            <span class="brand-text">Brand Yasser</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="login.html">Login</a></li>
+        </ul>
+    </nav>
+
+    <div class="auth-container">
+        <h2 class="form-title">Create Account</h2>
+        <p class="form-subtitle">Join our community and start shopping</p>
+        
+        <div class="error-message" id="error-message"></div>
+        <div class="success-message" id="success-message"></div>
+
+        <form id="signup-form" onsubmit="return validateForm(event)">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required minlength="3" placeholder="Enter your username">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required minlength="8" placeholder="Create a password">
+                <div class="password-requirements">
+                    <p>Password must meet the following requirements:</p>
+                    <ul>
+                        <li id="length">At least 8 characters long</li>
+                        <li id="uppercase">Contains uppercase letter</li>
+                        <li id="lowercase">Contains lowercase letter</li>
+                        <li id="number">Contains number</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" required placeholder="Confirm your password">
+            </div>
+            <button type="submit" class="auth-btn">Sign Up</button>
+        </form>
+
+        <div class="login-link">
+            Already have an account? <a href="login.html">Login here</a>
+        </div>
+    </div>
+
+    <script>
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirm_password');
+        const requirements = {
+            length: document.getElementById('length'),
+            uppercase: document.getElementById('uppercase'),
+            lowercase: document.getElementById('lowercase'),
+            number: document.getElementById('number')
+        };
+
+        function checkPassword() {
+            const value = password.value;
+            
+            // Check length
+            if (value.length >= 8) {
+                requirements.length.classList.add('valid');
+                requirements.length.classList.remove('invalid');
+            } else {
+                requirements.length.classList.add('invalid');
+                requirements.length.classList.remove('valid');
+            }
+
+            // Check uppercase
+            if (/[A-Z]/.test(value)) {
+                requirements.uppercase.classList.add('valid');
+                requirements.uppercase.classList.remove('invalid');
+            } else {
+                requirements.uppercase.classList.add('invalid');
+                requirements.uppercase.classList.remove('valid');
+            }
+
+            // Check lowercase
+            if (/[a-z]/.test(value)) {
+                requirements.lowercase.classList.add('valid');
+                requirements.lowercase.classList.remove('invalid');
+            } else {
+                requirements.lowercase.classList.add('invalid');
+                requirements.lowercase.classList.remove('valid');
+            }
+
+            // Check number
+            if (/[0-9]/.test(value)) {
+                requirements.number.classList.add('valid');
+                requirements.number.classList.remove('invalid');
+            } else {
+                requirements.number.classList.add('invalid');
+                requirements.number.classList.remove('valid');
+            }
+        }
+
+        function checkPasswordMatch() {
+            if (password.value === confirmPassword.value) {
+                confirmPassword.setCustomValidity('');
+            } else {
+                confirmPassword.setCustomValidity('Passwords do not match');
+            }
+        }
+
+        function validateForm(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+
+            // Reset messages
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+
+            // Validation
+            if (username.length < 3) {
+                errorMessage.textContent = "Username must be at least 3 characters long";
+                errorMessage.style.display = 'block';
+                return false;
+            }
+
+            if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                errorMessage.textContent = "Please enter a valid email address";
+                errorMessage.style.display = 'block';
+                return false;
+            }
+
+            if (password.length < 8) {
+                errorMessage.textContent = "Password must be at least 8 characters long";
+                errorMessage.style.display = 'block';
+                return false;
+            }
+
+            if (!/[A-Z]/.test(password)) {
+                errorMessage.textContent = "Password must contain at least one uppercase letter";
+                errorMessage.style.display = 'block';
+                return false;
+            }
+
+            if (!/[a-z]/.test(password)) {
+                errorMessage.textContent = "Password must contain at least one lowercase letter";
+                errorMessage.style.display = 'block';
+                return false;
+            }
+
+            if (!/[0-9]/.test(password)) {
+                errorMessage.textContent = "Password must contain at least one number";
+                errorMessage.style.display = 'block';
+                return false;
+            }
+
+            if (password !== confirmPassword) {
+                errorMessage.textContent = "Passwords do not match";
+                errorMessage.style.display = 'block';
+                return false;
+            }
+
+            // If all validations pass
+            successMessage.textContent = "Registration successful! Redirecting to login page...";
+            successMessage.style.display = 'block';
+            
+            // Redirect to login page after 2 seconds
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
+
+            return false;
+        }
+
+        password.addEventListener('input', checkPassword);
+        confirmPassword.addEventListener('input', checkPasswordMatch);
+    </script>
+</body>
+</html> 
